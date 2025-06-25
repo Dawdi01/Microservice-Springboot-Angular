@@ -11,6 +11,11 @@ jobs:
     name: Build & SonarCloud
     runs-on: ubuntu-latest
 
+    # 👇 Appliquer working-directory à toutes les étapes du job
+    defaults:
+      run:
+        working-directory: gestion-materiel
+
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v3
