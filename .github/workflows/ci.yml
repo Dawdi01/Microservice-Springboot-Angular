@@ -11,11 +11,6 @@ jobs:
     name: Build & SonarCloud
     runs-on: ubuntu-latest
 
-    # 👇 Appliquer working-directory à toutes les étapes du job
-    defaults:
-      run:
-        working-directory: gestion-materiel
-
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v3
@@ -26,11 +21,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 🧪 Run Tests
-        run: mvn test
+      - name: 🔧 Install `user-api` module locally
+        run: mvn clean install -DskipTests
+        working-directory: user-api
 
-      - name: 📦 Build (skip tests)
+      - name: 🧪 Run Tests (gestion-materiel)
+        run: mvn test
+        working-directory: gestion-materiel
+
+      - name: 📦 Build (gestion-materiel, skip tests)
         run: mvn package -DskipTests
+        working-directory: gestion-materiel
 
       - name: 🔍 SonarCloud Scan
         env:
@@ -40,3 +41,4 @@ jobs:
           -Dsonar.organization=dawdi01 \
           -Dsonar.host.url=https://sonarcloud.io \
           -Dsonar.login=$SONAR_TOKEN
+        working-directory: gestion-materiel
