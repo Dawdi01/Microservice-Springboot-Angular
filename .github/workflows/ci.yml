@@ -20,6 +20,18 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: 🔧 Install `user-api` locally
+        run: mvn clean install -DskipTests
+        working-directory: user-api
+
+      - name: 🧪 Run Tests (gestion-materiel)
+        run: mvn test
+        working-directory: gestion-materiel
+
+      - name: 📦 Build App (gestion-materiel, skip tests)
+        run: mvn package -DskipTests
+        working-directory: gestion-materiel
+
       - name: 🔍 SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -31,8 +43,9 @@ jobs:
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         working-directory: gestion-materiel
 
-      - name: 🐳 Build Docker image (multi-module support)
-        run: docker build -t gestion-materiel:latest -f gestion-materiel/Dockerfile .
+      - name: 🐳 Build Docker image
+        run: docker build -t gestion-materiel:latest .
+        working-directory: gestion-materiel
 
       - name: 🔐 Login to Nexus (via ngrok)
         env:
