@@ -1,4 +1,3 @@
-
 name: CI - Build, Analyze, Deploy
 
 on:
@@ -46,18 +45,17 @@ jobs:
 
       - name: 🐳 Build Docker image
         run: docker build -t gestion-materiel:latest .
-        working-directory: gestion-materiel
 
       - name: 🔐 Login to Nexus (via ngrok)
         env:
-          NEXUS_USER: ${{ secrets.NEXUS_USER }}
-          NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
-          NEXUS_REGISTRY: ${{ secrets.NEXUS_REGISTRY }}
+            NEXUS_USER: ${{ secrets.NEXUS_USER }}
+            NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
+            NEXUS_REGISTRY: ${{ secrets.NEXUS_REGISTRY }}
         run: echo "$NEXUS_PASS" | docker login --username "$NEXUS_USER" --password-stdin https://$NEXUS_REGISTRY
 
       - name: 📤 Push Docker image to Nexus
         env:
-          NEXUS_REGISTRY: ${{ secrets.NEXUS_REGISTRY }}
+             NEXUS_REGISTRY: ${{ secrets.NEXUS_REGISTRY }}
         run: |
-          docker tag gestion-materiel:latest $NEXUS_REGISTRY/repository/docker-hosted/gestion-materiel:latest
-          docker push $NEXUS_REGISTRY/repository/docker-hosted/gestion-materiel:latest
+                docker tag gestion-materiel:latest $NEXUS_REGISTRY/repository/docker-hosted/gestion-materiel:latest
+                docker push $NEXUS_REGISTRY/repository/docker-hosted/gestion-materiel:latest
