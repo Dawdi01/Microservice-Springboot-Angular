@@ -45,15 +45,15 @@ jobs:
 
       - name: 🐳 Build Docker image
         run: docker build -t gestion-materiel:latest .
-        working-directory: gestion-materiel
+
 
       - name: 🔐 Login to Nexus (via ngrok)
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
-        run: echo "$NEXUS_PASS" | docker login --username "$NEXUS_USER" --password-stdin ${{ secrets.NGROK_HOST }}
+        run: echo "$NEXUS_PASS" | docker login --username "$NEXUS_USER" --password-stdin https://${{ secrets.NGROK_HOST }}
 
       - name: 📤 Push Docker image to Nexus
         run: |
-          docker tag gestion-materiel:latest ${{ secrets.NGROK_HOST }}/repository/maven-releases/gestion-materiel:latest
-          docker push ${{ secrets.NGROK_HOST }}/repository/maven-releases/gestion-materiel:latest
+          docker tag gestion-materiel:latest ${{ secrets.NGROK_URL }}/repository/maven-releases/gestion-materiel:latest
+          docker push ${{ secrets.NGROK_URL }}/repository/maven-releases/gestion-materiel:latest
