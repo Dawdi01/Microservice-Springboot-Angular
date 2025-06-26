@@ -45,7 +45,7 @@ jobs:
 
       - name: 🐳 Build Docker image
         run: docker build -t gestion-materiel:latest .
-        working-directory: gestion-materiel
+
 
       - name: 🔐 Login to Nexus (via ngrok)
         env:
