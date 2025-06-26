@@ -51,7 +51,8 @@ jobs:
         env:
           NEXUS_USER: ${{ secrets.NEXUS_USER }}
           NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
-        run: echo "$NEXUS_PASS" | docker login --username "$NEXUS_USER" --password-stdin https://${{ secrets.NGROK_HOST }}
+          NGROK_HOST: ${{ secrets.NGROK_HOST }}
+        run: echo "$NEXUS_PASS" | docker login --username "$NEXUS_USER" --password-stdin https://$NGROK_HOST
 
       - name: 📤 Push Docker image to Nexus
         run: |
