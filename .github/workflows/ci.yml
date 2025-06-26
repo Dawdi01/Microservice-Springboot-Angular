@@ -35,11 +35,12 @@ jobs:
       - name: 🔍 SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn verify sonar:sonar \
-          -Dsonar.projectKey=Dawdi01_Microservice-Springboot-Angular \
-          -Dsonar.organization=pi2025-dawdi \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: |
+          mvn verify sonar:sonar \
+            -Dsonar.projectKey=Dawdi01_Microservice-Springboot-Angular \
+            -Dsonar.organization=pi2025-dawdi \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         working-directory: gestion-materiel
 
       - name: 🐳 Build Docker image
