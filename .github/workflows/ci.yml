@@ -1,4 +1,4 @@
-name: CI - Build and Analyze
+name: CI - Build, Analyze, Deploy
 
 on:
   push:
@@ -7,8 +7,7 @@ on:
     branches: [ "gestion-materiel" ]
 
 jobs:
-  build:
-    name: Build & SonarCloud
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +20,7 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 🔧 Install `user-api` module locally
+      - name: 🔧 Install `user-api` locally
         run: mvn clean install -DskipTests
         working-directory: user-api
 
@@ -29,12 +28,31 @@ jobs:
         run: mvn test
         working-directory: gestion-materiel
 
-      - name: 📦 Build (gestion-materiel, skip tests)
+      - name: 📦 Build App (gestion-materiel, skip tests)
         run: mvn package -DskipTests
         working-directory: gestion-materiel
 
       - name: 🔍 SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn verify sonar:sonar -Dsonar.projectKey=Dawdi01_Microservice-Springboot-Angular -Dsonar.organization=pi2025-dawdi -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+        run: mvn verify sonar:sonar \
+          -Dsonar.projectKey=Dawdi01_Microservice-Springboot-Angular \
+          -Dsonar.organization=pi2025-dawdi \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
         working-directory: gestion-materiel
+
+      - name: 🐳 Build Docker image
+        run: docker build -t gestion-materiel:latest .
+        working-directory: gestion-materiel
+
+      - name: 🔐 Login to Nexus (via ngrok)
+        env:
+          NEXUS_USER: ${{ secrets.NEXUS_USER }}
+          NEXUS_PASS: ${{ secrets.NEXUS_PASS }}
+        run: echo "$NEXUS_PASS" | docker login --username "$NEXUS_USER" --password-stdin ${{ secrets.NGROK_URL }}
+
+      - name: 📤 Push Docker image to Nexus
+        run: |
+          docker tag gestion-materiel:latest ${{ secrets.NGROK_URL }}/repository/maven-releases/gestion-materiel:latest
+          docker push ${{ secrets.NGROK_URL }}/repository/maven-releases/gestion-materiel:latest
