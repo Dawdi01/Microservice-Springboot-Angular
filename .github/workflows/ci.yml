@@ -32,11 +32,15 @@ jobs:
         run: mvn package -DskipTests
         working-directory: gestion-materiel
 
+      - name: 📊 Generate JaCoCo coverage report
+        run: mvn clean verify jacoco:report
+        working-directory: gestion-materiel
+
       - name: 🔍 SonarCloud Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn verify sonar:sonar \
+          mvn sonar:sonar \
             -Dsonar.projectKey=Dawdi01_Microservice-Springboot-Angular \
             -Dsonar.organization=pi2025-dawdi \
             -Dsonar.host.url=https://sonarcloud.io \
