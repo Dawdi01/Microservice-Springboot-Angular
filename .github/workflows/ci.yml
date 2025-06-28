@@ -2,9 +2,9 @@ name: CI - Build, Analyze, Deploy
 
 on:
   push:
-    branches: [ "gestion-materiel" ]
+    branches: [ "main", "gestion-materiel" ]
   pull_request:
-    branches: [ "gestion-materiel" ]
+    branches: [ "main", "gestion-materiel" ]
 
 jobs:
   build-and-deploy:
