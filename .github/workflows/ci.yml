@@ -54,6 +54,15 @@ jobs:
       - name: 🐳 Build Docker image
         run: docker build -t gestion-materiel:latest .
 
+      - name: 🔐 Docker Hub Login
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: 🏷️ Tag Docker image for Docker Hub
+        run: docker tag gestion-materiel:latest ${{ secrets.DOCKER_IMAGE_NAME }}:latest
+
+      - name: 📤 Push Docker image to Docker Hub
+        run: docker push ${{ secrets.DOCKER_IMAGE_NAME }}:latest
+
       - name: 🔐 Login to Nexus (via ngrok)
         env:
             NEXUS_USER: ${{ secrets.NEXUS_USER }}
