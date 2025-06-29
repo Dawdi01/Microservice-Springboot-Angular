@@ -67,4 +67,18 @@ class MaterielControllerTest {
         mockMvc.perform(delete("/api/materiels/123"))
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void testGetMaterielById() throws Exception {
+        Materiel materiel = new Materiel();
+        materiel.setId("1");
+        materiel.setName("Ballon");
+        when(materielService.getMaterielById("1")).thenReturn(materiel);
+
+        mockMvc.perform(get("/api/materiels/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Ballon"));
+    }
+
+
 }

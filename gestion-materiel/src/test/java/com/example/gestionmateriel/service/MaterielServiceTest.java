@@ -134,4 +134,32 @@ class MaterielServiceTest {
         Page<Materiel> result = materielService.getAllMaterielPaginatedAndSearch(pageable, "", null, null);
         assertEquals(1, result.getContent().size());
     }
+
+    @Test
+    void testGetMaterielByIdNotFound_shouldThrow() {
+        when(materielRepository.findById("not-found")).thenReturn(Optional.empty());
+
+        Exception ex = assertThrows(RuntimeException.class,
+                () -> materielService.getMaterielById("not-found"));
+
+        assertTrue(ex.getMessage().contains("introuvable"));
+
+    }
+
+    @Test
+    void testCreateMaterielWithImageEmpty_shouldSkipUpload() throws Exception {
+        Materiel materiel = new Materiel();
+        when(mockFile.isEmpty()).thenReturn(true);
+        when(materielRepository.save(any())).thenReturn(materiel);
+
+        Materiel result = materielService.createMaterielWithImage(materiel, mockFile);
+        assertNotNull(result);
+        verify(uploader, never()).upload(any(), any());
+    }
+
+    @Test
+    void testSaveImage_throwsException() throws Exception {
+        when(mockFile.getBytes()).thenThrow(new RuntimeException("Erreur"));
+        assertThrows(RuntimeException.class, () -> materielService.saveImage(mockFile));
+    }
 }
