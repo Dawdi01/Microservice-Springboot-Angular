@@ -24,6 +24,20 @@ public class AuthUtils {
 
         return userId;
     }
+    public String getCurrentToken() {
+        HttpServletRequest request = getCurrentHttpRequest();
+        if (request == null) {
+            throw new IllegalStateException("Impossible de récupérer la requête HTTP");
+        }
+
+        String token = request.getHeader("Authorization");
+        if (token == null || token.isEmpty()) {
+            throw new IllegalStateException("Authorization token manquant dans le header");
+        }
+
+        return token;
+    }
+
 
     private HttpServletRequest getCurrentHttpRequest() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
@@ -32,4 +46,6 @@ public class AuthUtils {
         }
         return null;
     }
+
+
 }

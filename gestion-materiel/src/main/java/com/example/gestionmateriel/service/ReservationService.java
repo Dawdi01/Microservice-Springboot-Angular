@@ -26,6 +26,7 @@ public class ReservationService {
     private final AuthUtils authUtils;
     private final UserClient userClient;
 
+
     public Reservation createReservation(ReservationCreateDTO dto) {
         Materiel materiel = materielService.getMaterielById(dto.getMaterielId());
 
@@ -139,5 +140,9 @@ public class ReservationService {
         } catch (Exception e) {
             System.err.println("Erreur lors de l'envoi de l'email : " + e.getMessage());
         }
+    }
+    public Reservation getReservationById(String id) {
+        return reservationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Réservation introuvable avec l'ID : " + id));
     }
 }
