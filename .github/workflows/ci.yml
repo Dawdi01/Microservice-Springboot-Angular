@@ -24,6 +24,10 @@ jobs:
         run: mvn clean install -DskipTests
         working-directory: user-api
 
+      - name: 🔧 Install `gestion-user` locally
+        run: mvn clean install -DskipTests
+        working-directory: gestion-user
+
       - name: 🧪 Run Tests (gestion-materiel)
         run: mvn test
         working-directory: gestion-materiel
